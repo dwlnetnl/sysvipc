@@ -43,14 +43,14 @@ var _zero uintptr
 // Perm corresponds to struct ipc_perm.
 type Perm struct{ s ipc_perm }
 
-func (p *Perm) Uid() int  { return int(p.s.uid) }
-func (p *Perm) Gid() int  { return int(p.s.gid) }
-func (p *Perm) Cuid() int { return int(p.s.cuid) }
-func (p *Perm) Cgid() int { return int(p.s.cgid) }
-func (p *Perm) Mode() int { return int(p.s.mode) }
+func (p *Perm) Uid() int  { return int(p.s.Uid) }
+func (p *Perm) Gid() int  { return int(p.s.Gid) }
+func (p *Perm) Cuid() int { return int(p.s.Cuid) }
+func (p *Perm) Cgid() int { return int(p.s.Cgid) }
+func (p *Perm) Mode() int { return int(p.s.Mode) }
 
-func (p *Perm) SetUid(uid int) { p.s.uid = uint32(uid) }
-func (p *Perm) SetGid(gid int) { p.s.gid = uint32(gid) }
+func (p *Perm) SetUid(uid int) { p.s.Uid = uint32(uid) }
+func (p *Perm) SetGid(gid int) { p.s.Gid = uint32(gid) }
 
 // Ftok creates IPC identifier from path name.
 func Ftok(path string, id uint8) (int, error) {
