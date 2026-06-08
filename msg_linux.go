@@ -8,7 +8,7 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-// ipcs ctl commands
+// Additional commands for Msgctl.
 const (
 	MSG_STAT     = 11
 	MSG_INFO     = 12
@@ -67,24 +67,24 @@ const (
 	_ = uint(4 - unsafe.Alignof(MsgInfo{}))
 )
 
-func msgget(key, msgflg int) (int, error) {
-	r0, _, e1 := unix.Syscall(unix.SYS_MSGGET, uintptr(key), uintptr(msgflg), 0)
+func msgget(key, flag int) (int, error) {
+	r0, _, e1 := unix.Syscall(unix.SYS_MSGGET, uintptr(key), uintptr(flag), 0)
 	if int(r0) == -1 {
 		return -1, e1
 	}
 	return int(r0), nil
 }
 
-func msgsnd(qid int, msg unsafe.Pointer, msgsz, msgflg int) (err error) {
-	r0, _, e1 := unix.Syscall6(unix.SYS_MSGSND, uintptr(qid), uintptr(msg), uintptr(msgsz), uintptr(msgflg), 0, 0)
+func msgsnd(id int, msg unsafe.Pointer, size, flag int) (err error) {
+	r0, _, e1 := unix.Syscall6(unix.SYS_MSGSND, uintptr(id), uintptr(msg), uintptr(size), uintptr(flag), 0, 0)
 	if int(r0) == -1 {
 		err = e1
 	}
 	return err
 }
 
-func msgrcv(qid int, msg unsafe.Pointer, msgsz, msgtyp, msgflg int) (int, error) {
-	r0, _, e1 := unix.Syscall6(unix.SYS_MSGRCV, uintptr(qid), uintptr(msg), uintptr(msgsz), uintptr(msgtyp), uintptr(msgflg), 0)
+func msgrcv(id int, msg unsafe.Pointer, size, typ, flag int) (int, error) {
+	r0, _, e1 := unix.Syscall6(unix.SYS_MSGRCV, uintptr(id), uintptr(msg), uintptr(size), uintptr(typ), uintptr(flag), 0)
 	if int(r0) == -1 {
 		return -1, e1
 	}
@@ -92,32 +92,38 @@ func msgrcv(qid int, msg unsafe.Pointer, msgsz, msgtyp, msgflg int) (int, error)
 	return int(r0), nil
 }
 
-func msgctl(qid, cmd int, buf any) (int, error) {
+// Msgctl corresponds to msgctl.
+//
+// arg can be of type:
+//
+//	*MsgControl    IPC_STAT, IPC_SET, MSG_STAT, MSG_STAT_ANY
+//	*MsgInfo       IPC_INFO, MSG_INFO
+func Msgctl(id, cmd int, arg any) (int, error) {
 	var p0 unsafe.Pointer
 	switch cmd {
 	case IPC_STAT, IPC_SET, MSG_STAT, MSG_STAT_ANY:
-		switch v := buf.(type) {
+		switch v := arg.(type) {
 		case *MsgControl:
 			p0 = unsafe.Pointer(v)
 		case MsgControl:
 			p0 = unsafe.Pointer(&v)
 		default:
-			panic("buf is not a *MsgControl value")
+			panic("arg is not a *MsgControl value")
 		}
 	case IPC_INFO, MSG_INFO:
-		switch v := buf.(type) {
+		switch v := arg.(type) {
 		case *MsgInfo:
 			p0 = unsafe.Pointer(v)
 		case MsgInfo:
 			p0 = unsafe.Pointer(&v)
 		default:
-			panic("buf is not a *MsgInfo value")
+			panic("arg is not a *MsgInfo value")
 		}
 	default:
 		p0 = unsafe.Pointer(&_zero)
 	}
 
-	r0, _, e1 := unix.Syscall(unix.SYS_MSGCTL, uintptr(qid), uintptr(cmd), uintptr(p0))
+	r0, _, e1 := unix.Syscall(unix.SYS_MSGCTL, uintptr(id), uintptr(cmd), uintptr(p0))
 	if int(r0) == -1 {
 		return -1, e1
 	}

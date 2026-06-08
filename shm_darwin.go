@@ -5,20 +5,25 @@ import "golang.org/x/sys/unix"
 // shmid_ds corresponds to struct shmid_ds.
 type shmid_ds = unix.SysvShmDesc
 
-func shmctl(id, cmd int, buf any) (int, error) {
-	var dest *unix.SysvShmDesc
+// Shmctl corresponds to shmctl.
+//
+// arg can be of type:
+//
+//	*ShmControl    IPC_STAT, IPC_SET
+func Shmctl(id, cmd int, buf any) (int, error) {
+	var desc *unix.SysvShmDesc
 
 	switch cmd {
 	case IPC_STAT, IPC_SET:
 		switch v := buf.(type) {
 		case *ShmControl:
-			dest = &v.s
+			desc = &v.s
 		case ShmControl:
-			dest = &v.s
+			desc = &v.s
 		default:
-			panic("buf is not a *ShmControl value")
+			panic("arg is not a *ShmControl value")
 		}
 	}
 
-	return unix.SysvShmCtl(id, cmd, dest)
+	return unix.SysvShmCtl(id, cmd, desc)
 }

@@ -8,20 +8,16 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-// shmat() shmflg values
+// Additional flag values for Shmat.
 const (
 	SHM_REMAP = 0o040000  // take-over region on attach
 	SHM_EXEC  = 0o0100000 // execution access
 )
 
-// super user shmctl commands
+// Additional commands for Shmctl.
 const (
-	SHM_LOCK   = 11
-	SHM_UNLOCK = 12
-)
-
-// ipcs ctl commands
-const (
+	SHM_LOCK     = 11
+	SHM_UNLOCK   = 12
 	SHM_STAT     = 13
 	SHM_INFO     = 14
 	SHM_STAT_ANY = 15
@@ -56,38 +52,44 @@ type ShmInfo struct {
 	SwapSuccesses uint  // unused since Linux 2.4
 }
 
-func shmctl(id, cmd int, buf any) (int, error) {
-	var dest *unix.SysvShmDesc
+// Shmctl corresponds to shmctl.
+//
+// arg can be of type:
+//
+//	*ShmControl    IPC_STAT, IPC_SET, SHM_STAT, SHM_STAT_ANY
+//	*ShmInfo       IPC_INFO, SHM_INFO
+func Shmctl(id, cmd int, arg any) (int, error) {
+	var desc *unix.SysvShmDesc
 
 	switch cmd {
 	case IPC_STAT, IPC_SET, SHM_STAT, SHM_STAT_ANY:
-		switch v := buf.(type) {
+		switch v := arg.(type) {
 		case *ShmControl:
-			dest = &v.s
+			desc = &v.s
 		case ShmControl:
-			dest = &v.s
+			desc = &v.s
 		default:
-			panic("buf is not a *ShmControl value")
+			panic("arg is not a *ShmControl value")
 		}
 	case IPC_INFO:
-		switch v := buf.(type) {
+		switch v := arg.(type) {
 		case *ShmInfo:
-			dest = (*unix.SysvShmDesc)(unsafe.Pointer(v))
+			desc = (*unix.SysvShmDesc)(unsafe.Pointer(v))
 		case ShmInfo:
-			dest = (*unix.SysvShmDesc)(unsafe.Pointer(&v))
+			desc = (*unix.SysvShmDesc)(unsafe.Pointer(&v))
 		default:
-			panic("buf is not a *ShmInfo value")
+			panic("arg is not a *ShmInfo value")
 		}
 	case SHM_INFO:
-		switch v := buf.(type) {
+		switch v := arg.(type) {
 		case *ShmSystemInfo:
-			dest = (*unix.SysvShmDesc)(unsafe.Pointer(v))
+			desc = (*unix.SysvShmDesc)(unsafe.Pointer(v))
 		case ShmSystemInfo:
-			dest = (*unix.SysvShmDesc)(unsafe.Pointer(&v))
+			desc = (*unix.SysvShmDesc)(unsafe.Pointer(&v))
 		default:
-			panic("buf is not a *ShmSystemInfo value")
+			panic("arg is not a *ShmSystemInfo value")
 		}
 	}
 
-	return unix.SysvShmCtl(id, cmd, dest)
+	return unix.SysvShmCtl(id, cmd, desc)
 }

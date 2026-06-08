@@ -4,9 +4,9 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-// Additional control commands for msgctl, semctl, shmctl.
+// Additional commands for Msgctl, Semctl, Shmctl.
 const (
-	IPC_INFO = 3 // see ipcs
+	IPC_INFO = 3
 )
 
 // ipc_perm corresponds to struct ipc_perm.

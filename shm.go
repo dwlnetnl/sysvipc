@@ -2,8 +2,7 @@ package sysvipc
 
 import "golang.org/x/sys/unix"
 
-// Possible flag values which may be OR'ed into the third
-// argument to Shmat.
+// Possible flag values for Shmat.
 const (
 	SHM_RDONLY = unix.SHM_RDONLY // read-only access
 	SHM_RND    = unix.SHM_RND    // round attach address to SHMLBA boundary
@@ -31,9 +30,4 @@ func Shmat(id int, addr uintptr, flag int) ([]byte, error) {
 // Shmdt corresponds to shmdt.
 func Shmdt(data []byte) error {
 	return unix.SysvShmDetach(data)
-}
-
-// Shmctl corresponds to shmctl.
-func Shmctl(id, cmd int, buf any) (int, error) {
-	return shmctl(id, cmd, buf)
 }

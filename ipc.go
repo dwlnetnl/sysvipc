@@ -12,6 +12,11 @@ const (
 )
 
 // Private key.
+//
+// If this special value is used for key, the system call ignores everything
+// but the least significant 9 bits of the flag argument to Msgget, Semget
+// or Shmget and creates a new message queue, semaphore set or shared memory
+// segment.
 const IPC_PRIVATE = unix.IPC_PRIVATE
 
 // Control commands.

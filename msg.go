@@ -16,33 +16,28 @@ func (m *MsgControl) Lspid() int  { return int(m.s.lspid) }
 func (m *MsgControl) Lrpid() int  { return int(m.s.lrpid) }
 
 // Msgget corresponds to msgget.
-func Msgget(key, msgflg int) (int, error) {
-	return msgget(key, msgflg)
+func Msgget(key, flag int) (int, error) {
+	return msgget(key, flag)
 }
 
 // Msgsnd corresponds to msgsnd.
-func Msgsnd(qid int, msg []byte, msgflg int) error {
+func Msgsnd(id int, msg []byte, flag int) error {
 	var p0 unsafe.Pointer
 	if len(msg) > 0 {
 		p0 = unsafe.Pointer(&msg[0])
 	} else {
 		p0 = unsafe.Pointer(&_zero)
 	}
-	return msgsnd(qid, p0, len(msg), msgflg)
+	return msgsnd(id, p0, len(msg), flag)
 }
 
 // Msgrcv corresponds to msgrcv.
-func Msgrcv(qid int, msg []byte, msgtyp, msgflg int) (int, error) {
+func Msgrcv(id int, msg []byte, typ, flag int) (int, error) {
 	var p0 unsafe.Pointer
 	if len(msg) > 0 {
 		p0 = unsafe.Pointer(&msg[0])
 	} else {
 		p0 = unsafe.Pointer(&_zero)
 	}
-	return msgrcv(qid, p0, len(msg), msgtyp, msgflg)
-}
-
-// Msgctl corresponds to msgctl.
-func Msgctl(qid, cmd int, buf any) (int, error) {
-	return msgctl(qid, cmd, buf)
+	return msgrcv(id, p0, len(msg), typ, flag)
 }
