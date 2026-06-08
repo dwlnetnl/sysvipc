@@ -2,6 +2,13 @@ package sysvipc
 
 import "golang.org/x/sys/unix"
 
+// Possible flag values which may be OR'ed into the third
+// argument to Shmat.
+const (
+	SHM_RDONLY = unix.SHM_RDONLY // read-only access
+	SHM_RND    = unix.SHM_RND    // round attach address to SHMLBA boundary
+)
+
 // ShmControl corresponds to struct shmid_ds.
 type ShmControl struct{ s shmid_ds }
 

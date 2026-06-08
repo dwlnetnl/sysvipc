@@ -10,10 +10,8 @@ import (
 
 // shmat() shmflg values
 const (
-	SHM_RDONLY = 0o010000  // read-only access
-	SHM_RND    = 0o020000  // round attach address to SHMLBA boundary
-	SHM_REMAP  = 0o040000  // take-over region on attach
-	SHM_EXEC   = 0o0100000 // execution access
+	SHM_REMAP = 0o040000  // take-over region on attach
+	SHM_EXEC  = 0o0100000 // execution access
 )
 
 // super user shmctl commands
