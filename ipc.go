@@ -28,16 +28,6 @@ const (
 	IPC_M = 0o010000 // Modify control info permission
 )
 
-// Permission flags (mode).
-const (
-	S_IRUSR = unix.S_IRUSR // read by user
-	S_IWUSR = unix.S_IWUSR // write by user
-	S_IRGRP = unix.S_IRGRP // read by group
-	S_IWGRP = unix.S_IWGRP // write by group
-	S_IROTH = unix.S_IROTH // read by others
-	S_IWOTH = unix.S_IWOTH // write by others
-)
-
 var _zero uintptr
 
 // Perm corresponds to struct ipc_perm.
