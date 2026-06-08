@@ -8,15 +8,16 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-// ipcs ctl commands.
+// ipcs ctl commands
 const (
 	MSG_STAT     = 11
 	MSG_INFO     = 12
 	MSG_STAT_ANY = 13
 )
 
-// msqid_ds corresponds to struct msqid_ds (new layout).
+// msqid_ds corresponds to struct msqid64_ds.
 type msqid_ds struct {
+	// TODO: probably will not work on some architectures, e.g. 32-bit?
 	_      structs.HostLayout
 	perm   ipc_perm // msg queue permissions
 	stime  int64    // time of last msgsnd()
@@ -27,8 +28,8 @@ type msqid_ds struct {
 	qbytes uint64   // max bytes on the queue
 	lspid  int32    // pid of last msgsnd()
 	lrpid  int32    // pid of last msgrcv()
-	_      uint64   // RESERVED
-	_      uint64   // RESERVED
+	_      uint64
+	_      uint64
 }
 
 const (
@@ -57,7 +58,6 @@ type MsgInfo struct {
 	Ssz  int32  // message segment size (unused within kernel)
 	Tql  int32  // max number of messages on all queues (unused within kernel)
 	Seg  uint16 // max number of segments (unused within kernel)
-	_    [2]byte
 }
 
 const (
@@ -95,7 +95,7 @@ func msgrcv(qid int, msg unsafe.Pointer, msgsz, msgtyp, msgflg int) (int, error)
 func msgctl(qid, cmd int, buf any) (int, error) {
 	var p0 unsafe.Pointer
 	switch cmd {
-	case IPC_STAT, IPC_SET, MSG_STAT:
+	case IPC_STAT, IPC_SET, MSG_STAT, MSG_STAT_ANY:
 		switch v := buf.(type) {
 		case *MsgControl:
 			p0 = unsafe.Pointer(v)

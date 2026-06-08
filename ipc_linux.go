@@ -1,10 +1,12 @@
 package sysvipc
 
-import "golang.org/x/sys/unix"
+import (
+	"golang.org/x/sys/unix"
+)
 
 // Additional control commands for msgctl, semctl, shmctl.
 const (
-	IPC_INFO = 3 // See ipcs.
+	IPC_INFO = 3 // see ipcs
 )
 
 // ipc_perm corresponds to struct ipc_perm.

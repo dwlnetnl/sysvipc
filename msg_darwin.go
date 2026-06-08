@@ -37,32 +37,21 @@ const (
 	_ = uint(4 - unsafe.Alignof(msqid_ds{}))
 )
 
-func (m *MsgControl) Cbytes() uint64 {
-	return binary.NativeEndian.Uint64(m.s.cbytes[:])
+func bytesToUint64(b []byte) uint64 {
+	return binary.NativeEndian.Uint64(b)
 }
 
-func (m *MsgControl) Qnum() uint64 {
-	return binary.NativeEndian.Uint64(m.s.qnum[:])
-}
-
-func (m *MsgControl) Qbytes() uint64 {
-	return binary.NativeEndian.Uint64(m.s.qbytes[:])
-}
-
-func (m *MsgControl) Stime() time.Time {
-	t := int64(binary.NativeEndian.Uint64(m.s.stime[:]))
+func bytesToTime(b []byte) time.Time {
+	t := int64(binary.NativeEndian.Uint64(b))
 	return time.Unix(t, 0)
 }
 
-func (m *MsgControl) Rtime() time.Time {
-	t := int64(binary.NativeEndian.Uint64(m.s.rtime[:]))
-	return time.Unix(t, 0)
-}
-
-func (m *MsgControl) Ctime() time.Time {
-	t := int64(binary.NativeEndian.Uint64(m.s.ctime[:]))
-	return time.Unix(t, 0)
-}
+func (m *MsgControl) Cbytes() uint64   { return bytesToUint64(m.s.cbytes[:]) }
+func (m *MsgControl) Qnum() uint64     { return bytesToUint64(m.s.qnum[:]) }
+func (m *MsgControl) Qbytes() uint64   { return bytesToUint64(m.s.qbytes[:]) }
+func (m *MsgControl) Stime() time.Time { return bytesToTime(m.s.stime[:]) }
+func (m *MsgControl) Rtime() time.Time { return bytesToTime(m.s.rtime[:]) }
+func (m *MsgControl) Ctime() time.Time { return bytesToTime(m.s.ctime[:]) }
 
 func (m *MsgControl) SetQbytes(qbytes uint64) {
 	binary.NativeEndian.PutUint64(m.s.qbytes[:], qbytes)
