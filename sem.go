@@ -5,8 +5,8 @@ const (
 	SEM_UNDO = 0x1000 // undo the operation on exit
 )
 
-// SemControl corresponds to struct semid_ds.
-type SemControl struct{ s semid_ds }
+// SemDesc corresponds to struct semid_ds.
+type SemDesc struct{ s semid_ds }
 
 // Sembuf corresponds to struct sembuf.
 type Sembuf struct {

@@ -8,12 +8,12 @@ const (
 	MSG_NOERROR = 0o010000 // no error if message is too big
 )
 
-// MsgControl corresponds to struct msqid_ds.
-type MsgControl struct{ s msqid_ds }
+// MsgDesc corresponds to struct msqid_ds.
+type MsgDesc struct{ s msqid_ds }
 
-func (m *MsgControl) Perm() *Perm { return &Perm{m.s.perm} }
-func (m *MsgControl) Lspid() int  { return int(m.s.lspid) }
-func (m *MsgControl) Lrpid() int  { return int(m.s.lrpid) }
+func (m *MsgDesc) Perm() *Perm { return &Perm{m.s.perm} }
+func (m *MsgDesc) Lspid() int  { return int(m.s.lspid) }
+func (m *MsgDesc) Lrpid() int  { return int(m.s.lrpid) }
 
 // Msgget corresponds to msgget.
 func Msgget(key, flag int) (int, error) {

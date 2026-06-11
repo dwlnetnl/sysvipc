@@ -36,14 +36,14 @@ const (
 	_ = uint(4 - unsafe.Alignof(msqid_ds{}))
 )
 
-func (m *MsgControl) Cbytes() uint64   { return bytesToUint64(m.s.cbytes[:]) }
-func (m *MsgControl) Qnum() uint64     { return bytesToUint64(m.s.qnum[:]) }
-func (m *MsgControl) Qbytes() uint64   { return bytesToUint64(m.s.qbytes[:]) }
-func (m *MsgControl) Stime() time.Time { return bytesToTime(m.s.stime[:]) }
-func (m *MsgControl) Rtime() time.Time { return bytesToTime(m.s.rtime[:]) }
-func (m *MsgControl) Ctime() time.Time { return bytesToTime(m.s.ctime[:]) }
+func (m *MsgDesc) Cbytes() uint64   { return bytesToUint64(m.s.cbytes[:]) }
+func (m *MsgDesc) Qnum() uint64     { return bytesToUint64(m.s.qnum[:]) }
+func (m *MsgDesc) Qbytes() uint64   { return bytesToUint64(m.s.qbytes[:]) }
+func (m *MsgDesc) Stime() time.Time { return bytesToTime(m.s.stime[:]) }
+func (m *MsgDesc) Rtime() time.Time { return bytesToTime(m.s.rtime[:]) }
+func (m *MsgDesc) Ctime() time.Time { return bytesToTime(m.s.ctime[:]) }
 
-func (m *MsgControl) SetQbytes(qbytes uint64) {
+func (m *MsgDesc) SetQbytes(qbytes uint64) {
 	binary.NativeEndian.PutUint64(m.s.qbytes[:], qbytes)
 }
 
@@ -93,9 +93,9 @@ func Msgctl(id, cmd int, arg any) (int, error) {
 	switch cmd {
 	case unix.IPC_STAT, unix.IPC_SET:
 		switch v := arg.(type) {
-		case *MsgControl:
+		case *MsgDesc:
 			p0 = unsafe.Pointer(v)
-		case MsgControl:
+		case MsgDesc:
 			p0 = unsafe.Pointer(&v)
 		default:
 			panic("arg is not a *MsgControl value")

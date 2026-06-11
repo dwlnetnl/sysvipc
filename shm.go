@@ -8,14 +8,14 @@ const (
 	SHM_RND    = unix.SHM_RND    // round attach address to SHMLBA boundary
 )
 
-// ShmControl corresponds to struct shmid_ds.
-type ShmControl struct{ s shmid_ds }
+// ShmDesc corresponds to struct shmid_ds.
+type ShmDesc struct{ s shmid_ds }
 
-func (s *ShmControl) Perm() *Perm    { return &Perm{s.s.Perm} }
-func (s *ShmControl) Segsz() uint64  { return uint64(s.s.Segsz) }
-func (s *ShmControl) Lpid() int      { return int(s.s.Lpid) }
-func (s *ShmControl) Cpid() int      { return int(s.s.Cpid) }
-func (s *ShmControl) Nattch() uint64 { return uint64(s.s.Segsz) }
+func (s *ShmDesc) Perm() *Perm    { return &Perm{s.s.Perm} }
+func (s *ShmDesc) Segsz() uint64  { return uint64(s.s.Segsz) }
+func (s *ShmDesc) Lpid() int      { return int(s.s.Lpid) }
+func (s *ShmDesc) Cpid() int      { return int(s.s.Cpid) }
+func (s *ShmDesc) Nattch() uint64 { return uint64(s.s.Segsz) }
 
 // Shmget corresponds to shmget.
 func Shmget(key, size, flag int) (int, error) {

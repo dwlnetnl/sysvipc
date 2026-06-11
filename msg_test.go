@@ -26,7 +26,7 @@ func TestMsg_RoundTrip(t *testing.T) {
 		t.Fatal("msgsnd:", err)
 	}
 
-	var c MsgControl
+	var c MsgDesc
 	if _, err := Msgctl(qid, IPC_STAT, &c); err != nil {
 		t.Fatal("msgctl IPC_STAT:", err)
 	}

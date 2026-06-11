@@ -16,9 +16,9 @@ func Shmctl(id, cmd int, buf any) (int, error) {
 	switch cmd {
 	case IPC_STAT, IPC_SET:
 		switch v := buf.(type) {
-		case *ShmControl:
+		case *ShmDesc:
 			desc = &v.s
-		case ShmControl:
+		case ShmDesc:
 			desc = &v.s
 		default:
 			panic("arg is not a *ShmControl value")

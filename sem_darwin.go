@@ -39,8 +39,8 @@ const (
 	_ = uint(4 - unsafe.Alignof(semid_ds{}))
 )
 
-func (s *SemControl) Otime() time.Time { return bytesToTime(s.s.otime[:]) }
-func (s *SemControl) Ctime() time.Time { return bytesToTime(s.s.ctime[:]) }
+func (s *SemDesc) Otime() time.Time { return bytesToTime(s.s.otime[:]) }
+func (s *SemDesc) Ctime() time.Time { return bytesToTime(s.s.ctime[:]) }
 
 //go:cgo_import_dynamic libSystem_semget semget "/usr/lib/libSystem.B.dylib"
 //go:cgo_import_dynamic libSystem_semop semop "/usr/lib/libSystem.B.dylib"
@@ -84,9 +84,9 @@ func Semctl(id, num, cmd int, arg any) (int, error) {
 		switch cmd {
 		case IPC_STAT, IPC_SET:
 			switch v := arg.(type) {
-			case *SemControl:
+			case *SemDesc:
 				p0 = unsafe.Pointer(v)
-			case SemControl:
+			case SemDesc:
 				p0 = unsafe.Pointer(&v)
 			default:
 				panic("arg is not a *SemControl value")
